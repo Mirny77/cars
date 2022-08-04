@@ -7,7 +7,7 @@ docker-compose up -d --build
 docker exec -it car_php bash
 ```
 composer install
-```
+
 скопировать с заменой файл env.example в папку backend и переименовать в .env
 php artisan migrate --seed
 ```
