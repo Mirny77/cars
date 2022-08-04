@@ -1,0 +1,51 @@
+# docker-compose.yml
+version: '3.7'
+services:
+
+  nginx:
+    container_name: car_nginx
+    image: nginx
+    ports:
+      - 80:80
+    depends_on:
+      - php
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/sites:/etc/nginx/sites-enabled
+
+  php:
+    build: docker/php/
+    container_name: car_php
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/var/www/html
+      
+  postgres:
+    container_name: car_postgres
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=october
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+  
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: car_pgadmin
+    ports:
+      - "5555:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    depends_on:
+      - postgres
+
+volumes:
+  dbdata:
+    driver: local
